@@ -238,7 +238,7 @@
 <body>
 
 <div class="container">
-    <h1>📝 กิจกรรม 1.3 ตอบปัญหาการพัฒนาโครงงานและการเขียนรายงาน</h1>
+    <h1>📝 กิจกรรม 3.2 ตอบปัญหาการพัฒนาโครงงานและการเขียนรายงาน</h1>
     <p class="notice">⚠️ • ตรวจแบบเรียลไทม์ • ห้ามคัดลอกมาวาง </p>
 
     <div class="student-info-section">
@@ -271,8 +271,7 @@
         </div>
     </div>
 
-    <div id="quiz-area">
-        </div>
+    <div id="quiz-area"></div>
 
     <button class="btn-submit" id="submitBtn" onclick="submitQuiz()">ส่งคำตอบและบันทึกข้อมูล</button>
 
@@ -284,7 +283,7 @@
 </div>
 
 <script>
-    // 1. คลังข้อสอบเรื่องการพัฒนาโครงงานและการเขียนรายงาน 5 บท (จำนวน 8 ชุด - เอาคำว่า "ชุดที่ X" ออกแล้ว)
+    // 1. คลังข้อสอบเรื่องการพัฒนาโครงงานและการเขียนรายงาน 5 บท
     const quizBank = [
         {
             question: "ในการเริ่มต้นทำโครงงาน การระบุ 'ที่มาและความสำคัญของปัญหา' ในบทที่ 1 ควรมีลักษณะการเขียนอย่างไร และทำไมถึงห้ามหลีกเลี่ยงการอ้างอิงแหล่งข้อมูลวิจัยที่น่าเชื่อถือ<br><small style='color:var(--text-muted); font-weight:normal;'>How should the 'Background and Significance' in Chapter 1 be written, and why is referencing reliable research crucial?</small>",
@@ -333,7 +332,7 @@
 
     generateRandomQuiz();
 
-    // 3. เรนเดอร์การ์ดข้อสอบลงบนหน้าเพจ HTML (หน้าจอเด็กจะโชว์เป็น ข้อที่ 1, ข้อที่ 2... ตามลำดับสุ่ม)
+    // 3. เรนเดอร์การ์ดข้อสอบลงบนหน้าเพจ HTML
     const quizArea = document.getElementById('quiz-area');
     selectedQuiz.forEach((item, i) => {
         quizArea.insertAdjacentHTML('beforeend', `
@@ -416,6 +415,7 @@
         let finalTotal = 0;
         for(let i = 1; i <= 5; i++) {
             let percent = parseFloat(document.getElementById(`perc-${i}`).innerText);
+            // คิดสัดส่วนคะแนนเป็นข้อละ 1 คะแนนเต็ม (ตามเงื่อนไขคะแนนรวม 5 คะแนน)
             let scoreForEachQuestion = percent / 100; 
             
             const shortQuestionText = selectedQuiz[i-1].question.split('<br>')[0];
@@ -424,14 +424,16 @@
             payload[`score${i}`] = scoreForEachQuestion.toFixed(2); 
             finalTotal += scoreForEachQuestion;
         }
+        
+        // แสดงทศนิยม 1 ตำแหน่ง สรุปคะแนนรวมเต็ม 5 คะแนนพอดี
         payload.totalScore = finalTotal.toFixed(1);
 
         document.getElementById('totalScore').innerText = payload.totalScore;
         document.getElementById('result').style.display = "block";
         document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
 
-        // **หมายเหตุ**: อย่าลืมผูก URL Apps Script ของคุณตรงนี้
-        const SCRIPT_URL = "https://docs.google.com/spreadsheets/d/1Apt3fsW65W5Z_IAXpE89HZ-aXauGJWTMX8j2wXGytO8/edit?gid=0#gid=0";
+        // ⚠️ วางลิงก์ URL เว็บแอป (ที่ขึ้นต้นด้วย https://script.google.com/macros/s/...) ลงในเครื่องหมายคำพูดด้านล่างนี้ครับ
+        const SCRIPT_URL = "วางลิงก์เว็บแอปที่ได้จากขั้นตอนที่_1_ตรงนี้ครับ";
 
         try {
             await fetch(SCRIPT_URL, {
