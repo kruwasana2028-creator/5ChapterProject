@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>กิจกรรม 1.3 ตอบปัญหาการพัฒนาโครงงานและการเขียนรายงาน</title>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            padding: 30px 15px;
+            line-height: 1.6;
+            user-select: none; /* ป้องกันการคัดลอกโจทย์ */
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--text-main);
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .notice {
+            text-align: center;
+            color: var(--danger);
+            font-weight: 600;
+            font-size: 0.95em;
+            margin-bottom: 35px;
+            background: #fef2f2;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px dashed var(--danger);
+        }
+
+        /* ส่วนกรอกข้อมูลนักเรียน (Responsive Grid Layout) */
+        .student-info-section {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 35px;
+            border: 1px solid var(--border);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 2fr; 
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .info-grid-sub {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            max-width: 50%;
+        }
+
+        @media (max-width: 650px) {
+            .info-grid, .info-grid-sub {
+                grid-template-columns: 1fr;
+                max-width: 100%;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            font-size: 0.9em;
+            color: #334155;
+        }
+
+        .form-group input, .form-group select {
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95em;
+            outline: none;
+            background-color: var(--card-bg);
+            transition: all 0.2s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        /* ส่วนการ์ดข้อสอบ */
+        .question-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            transition: border-color 0.2s ease;
+        }
+
+        .question-card:focus-within {
+            border-color: var(--primary);
+        }
+
+        .q-text {
+            font-weight: 700;
+            font-size: 1.05em;
+            margin-bottom: 12px;
+            color: var(--text-main);
+            display: block;
+        }
+
+        textarea {
+            width: 100%;
+            height: 110px;
+            padding: 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            resize: vertical;
+            font-size: 0.98em;
+            box-sizing: border-box;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        textarea:focus {
+            border-color: var(--primary);
+        }
+
+        /* แสดงผลคะแนนความคืบหน้าแบบเรียลไทม์ */
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            font-size: 0.88em;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .progress-container {
+            width: 100%;
+            background: #e2e8f0;
+            height: 6px;
+            border-radius: 10px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--primary);
+            transition: width 0.4s ease, background-color 0.3s ease;
+        }
+
+        /* ปุ่มส่งข้อสอบ */
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.15em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 15px;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-submit:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* กล่องแสดงสรุปคะแนนหลังจากส่งเรียบร้อย */
+        #result {
+            display: none;
+            text-align: center;
+            margin-top: 30px;
+            padding: 30px;
+            border-radius: 12px;
+            background: #f0fdf4;
+            border: 2px solid var(--success);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📝 กิจกรรม 1.3 ตอบปัญหาการพัฒนาโครงงานและการเขียนรายงาน</h1>
+    <p class="notice">⚠️ • ตรวจแบบเรียลไทม์ • ห้ามคัดลอกมาวาง </p>
+
+    <div class="student-info-section">
+        <div class="info-grid">
+            <div class="form-group">
+                <label for="studentId">เลขประจำตัวนักเรียน</label>
+                <input type="text" id="studentId" placeholder="เช่น 12345" required>
+            </div>
+            <div class="form-group">
+                <label for="prefix">คำนำหน้าชื่อ</label>
+                <select id="prefix">
+                    <option value="นาย">นาย</option>
+                    <option value="นางสาว">นางสาว</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="fullName">ชื่อ - นามสกุล</label>
+                <input type="text" id="fullName" placeholder="ไม่ต้องพิมพ์คำนำหน้าซ้ำ" required>
+            </div>
+        </div>
+        <div class="info-grid-sub">
+            <div class="form-group">
+                <label for="studentNo">เลขที่/ตอน</label>
+                <input type="text" id="studentNo" placeholder="เช่น 1ก" min="1" required>
+            </div>
+            <div class="form-group">
+                <label for="studentClass">ห้องเรียน</label>
+                <input type="text" id="studentClass" placeholder="เช่น 1" required>
+            </div>
+        </div>
+    </div>
+
+    <div id="quiz-area">
+        </div>
+
+    <button class="btn-submit" id="submitBtn" onclick="submitQuiz()">ส่งคำตอบและบันทึกข้อมูล</button>
+
+    <div id="result">
+        <h2 style="color: #166534; margin-bottom: 10px;">🎉 ส่งคำตอบเสร็จสิ้น!</h2>
+        <p style="font-size: 1.4em; font-weight: bold; margin-bottom: 5px;">คะแนนประเมินรวม: <span id="totalScore" style="color: var(--success);">0</span> / 5 คะแนน</p>
+        <p id="saveMsg" style="color: var(--text-muted); font-size: 0.95em;">กำลังอัปโหลดข้อมูลเข้าสู่ระบบ...</p>
+    </div>
+</div>
+
+<script>
+    // 1. คลังข้อสอบเรื่องการพัฒนาโครงงานและการเขียนรายงาน 5 บท (จำนวน 8 ชุด - เอาคำว่า "ชุดที่ X" ออกแล้ว)
+    const quizBank = [
+        {
+            question: "ในการเริ่มต้นทำโครงงาน การระบุ 'ที่มาและความสำคัญของปัญหา' ในบทที่ 1 ควรมีลักษณะการเขียนอย่างไร และทำไมถึงห้ามหลีกเลี่ยงการอ้างอิงแหล่งข้อมูลวิจัยที่น่าเชื่อถือ<br><small style='color:var(--text-muted); font-weight:normal;'>How should the 'Background and Significance' in Chapter 1 be written, and why is referencing reliable research crucial?</small>",
+            keywords: ["ปัญหา", "ที่มา", "ความสำคัญ", "อ้างอิง", "เหตุผล", "หลักการ", "ความน่าเชื่อถือ", "background", "significance", "problem", "cite", "reference", "reason"]
+        },
+        {
+            question: "'วัตถุประสงค์ของโครงงาน' (บทที่ 1) และ 'สรุปผลการดำเนินงาน' (บทที่ 5) มีความสอดคล้องกันอย่างไร จงอธิบายพร้อมยกตัวอย่างให้เห็นภาพชัดเจน<br><small style='color:var(--text-muted); font-weight:normal;'>How do the 'Project Objectives' in Chapter 1 and the 'Conclusion' in Chapter 5 align? Explain with an example.</small>",
+            keywords: ["วัตถุประสงค์", "สอดคล้อง", "สรุปผล", "ตอบโจทย์", "เป้าหมาย", "บทที่ 5", "บทที่ 1", "objective", "conclusion", "align", "match", "result", "goal"]
+        },
+        {
+            question: "การเขียน 'เอกสารและงานวิจัยที่เกี่ยวข้อง' ในบทที่ 2 มีประโยชน์ต่อผู้พัฒนาโครงงานอย่างไรในการเลือกเครื่องมือหรือทฤษฎีมาแก้ไขปัญหา<br><small style='color:var(--text-muted); font-weight:normal;'>How does reviewing 'Related Literature and Research' in Chapter 2 benefit developers in choosing tools or theories?</small>",
+            keywords: ["ทฤษฎี", "งานวิจัย", "เกี่ยวข้อง", "เครื่องมือ", "ความรู้", "แนวคิด", "บทที่ 2", "literature", "review", "theory", "tool", "related", "research"]
+        },
+        {
+            question: "จงอธิบายความสำคัญของการเขียน 'วิธีดำเนินงานโครงงาน' (บทที่ 3) ให้ละเอียดชัดเจน และหากเขียนขั้นตอนกำกวมจะส่งผลเสียต่อการทดสอบระบบอย่างไร<br><small style='color:var(--text-muted); font-weight:normal;'>Why is a detailed 'Methodology' in Chapter 3 important, and how do ambiguous steps affect system testing?</small>",
+            keywords: ["วิธีดำเนินงาน", "ขั้นตอน", "ละเอียด", "ชัดเจน", "ทดสอบ", "แผน", "บทที่ 3", "methodology", "procedure", "step", "test", "clear", "design"]
+        },
+        {
+            question: "ในบทที่ 4 'ผลการดำเนินงาน' นักเรียนควรเลือกใช้ 'ตาราง' หรือ 'แผนภูมิ/กราฟ' ในการนำเสนอข้อมูลเมื่อใด เพื่อให้ผู้เขียนรายงานและผู้อ่านเข้าใจง่ายที่สุด<br><small style='color:var(--text-muted); font-weight:normal;'>In Chapter 4 'Results', when should you use tables versus charts/graphs for clearer data presentation?</small>",
+            keywords: ["ผลการดำเนิน", "ตาราง", "แผนภูมิ", "กราฟ", "นำเสนอ", "วิเคราะห์", "เข้าใจง่าย", "result", "table", "chart", "graph", "data", "present"]
+        },
+        {
+            question: "การเขียน 'อภิปรายผล' (Discussion) ในบทที่ 5 มีความแตกต่างจากการรายงานผลในบทที่ 4 อย่างไร และทำไมต้องมีการเปรียบเทียบกับงานวิจัยของผู้อื่น<br><small style='color:var(--text-muted); font-weight:normal;'>How does 'Discussion' in Chapter 5 differ from 'Results' in Chapter 4, and why compare it with others' research?</small>",
+            keywords: ["อภิปราย", "เปรียบเทียบ", "แตกต่าง", "งานวิจัย", "สอดคล้อง", "วิเคราะห์เหตุผล", "discussion", "compare", "differ", "result", "reason", "why"]
+        },
+        {
+            question: "ข้อเสนอแนะ (Suggestions) ในบทที่ 5 ของรายงานโครงงานที่ดี ควรมีลักษณะอย่างไร และทำไมไม่ควรเขียนสิ่งที่อยู่นอกเหนือขอบเขตทฤษฎีของโครงงาน<br><small style='color:var(--text-muted); font-weight:normal;'>What are the characteristics of good 'Suggestions' in Chapter 5, and why should they stay within the project's scope?</small>",
+            keywords: ["ข้อเสนอแนะ", "อนาคต", "ขอบเขต", "พัฒนาต่อ", "ปรับปรุง", "ประโยชน์", "suggestion", "future", "scope", "improve", "develop", "recommend"]
+        },
+        {
+            question: "หากโครงงานของนักเรียนเกิดปัญหา 'ผลการทดลองไม่เป็นไปตามที่คาดหวังไว้' นักเรียนควรทบทวนหรือแก้ไขเนื้อหาในรายงานบทใดบ้าง (ระบุได้มากกว่า 1 บท) เพราะเหตุใด<br><small style='color:var(--text-muted); font-weight:normal;'>If project results don't meet expectations, which chapters should you review or modify, and why?</small>",
+            keywords: ["ทบทวน", "แก้ไข", "บทที่", "ผิดพลาด", "สมมติฐาน", "วิธีดำเนินงาน", "อภิปราย", "review", "modify", "chapter", "error", "hypothesis", "method"]
+        }
+    ];
+
+    // 2. ฟังก์ชันสุ่มและเลือกโจทย์จำนวน 5 ข้อจากคลัง 8 ข้อ
+    let selectedQuiz = [];
+    function generateRandomQuiz() {
+        let pool = [...quizBank];
+        for (let i = pool.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [pool[i], pool[j]] = [pool[j], pool[i]];
+        }
+        selectedQuiz = pool.slice(0, 5);
+    }
+
+    generateRandomQuiz();
+
+    // 3. เรนเดอร์การ์ดข้อสอบลงบนหน้าเพจ HTML (หน้าจอเด็กจะโชว์เป็น ข้อที่ 1, ข้อที่ 2... ตามลำดับสุ่ม)
+    const quizArea = document.getElementById('quiz-area');
+    selectedQuiz.forEach((item, i) => {
+        quizArea.insertAdjacentHTML('beforeend', `
+            <div class="question-card">
+                <span class="q-text">ข้อที่ ${i+1}: ${item.question}</span>
+                <textarea id="ans-${i+1}" placeholder="พิมพ์คำตอบวิเคราะห์ของคุณที่นี่..." oninput="checkLiveProgress(${i+1})"></textarea>
+                <div class="status-row">
+                    <span>ความสมบูรณ์เนื้อหา: <span id="perc-${i+1}">0</span>%</span>
+                </div>
+                <div class="progress-container"><div id="bar-${i+1}" class="progress-bar"></div></div>
+            </div>
+        `);
+    });
+
+    // ระบบล็อกห้ามวางข้อความ (Anti-Paste)
+    document.querySelectorAll('textarea').forEach(el => {
+        el.addEventListener('paste', e => {
+            e.preventDefault();
+            alert("❌ ระบบล็อกการวางข้อความ! ต้องการให้ผู้เรียนพิมพ์วิเคราะห์ด้วยตัวเองเท่านั้น");
+        });
+    });
+
+    // ฟังก์ชันตรวจสอบเรียลไทม์ขณะนักเรียนพิมพ์คำตอบ
+    function checkLiveProgress(idx) {
+        const text = document.getElementById(`ans-${idx}`).value.trim().toLowerCase();
+        if(!text) { updateUI(idx, 0); return; }
+
+        let matches = 0;
+        const currentKeywords = selectedQuiz[idx-1].keywords;
+        
+        currentKeywords.forEach(kw => { if(text.includes(kw.toLowerCase())) matches++; });
+
+        let maxExpectedMatches = Math.min(currentKeywords.length / 2, 4); 
+        let kwPerc = (Math.min(matches, maxExpectedMatches) / maxExpectedMatches) * 70; 
+        
+        let lenPerc = Math.min((text.length / 60) * 30, 30);  
+        let totalPerc = Math.round(kwPerc + lenPerc);
+        if(totalPerc > 100) totalPerc = 100;
+
+        updateUI(idx, totalPerc);
+    }
+
+    function updateUI(idx, p) {
+        document.getElementById(`perc-${idx}`).innerText = p;
+        document.getElementById(`bar-${idx}`).style.width = p + "%";
+        
+        const bar = document.getElementById(`bar-${idx}`);
+        if(p < 40) bar.style.background = "var(--danger)";
+        else if(p < 75) bar.style.background = "var(--warning)";
+        else bar.style.background = "var(--success)";
+    }
+
+    // ฟังก์ชันรวบรวมข้อมูลส่งเข้าฐานข้อมูล Google Sheets
+    async function submitQuiz() {
+        const studentId = document.getElementById('studentId').value.trim();
+        const prefix = document.getElementById('prefix').value;
+        const fullName = document.getElementById('fullName').value.trim();
+        const studentNo = document.getElementById('studentNo').value.trim();
+        const studentClass = document.getElementById('studentClass').value.trim();
+
+        if(!studentId || !fullName || !studentNo || !studentClass) {
+            alert("⚠️ ขออภัย: กรุณากรอกข้อมูลส่วนตัวของนักเรียนให้ครบทุกช่องก่อนส่งครับ"); 
+            return;
+        }
+
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.style.background = "#94a3b8";
+        submitBtn.innerText = "กำลังนำส่งข้อมูลเข้าสู่สเปรดชีต...";
+
+        const payload = {
+            studentId: studentId,
+            prefix: prefix,
+            fullName: fullName,
+            studentNo: studentNo,
+            studentClass: studentClass,
+            totalScore: 0
+        };
+
+        let finalTotal = 0;
+        for(let i = 1; i <= 5; i++) {
+            let percent = parseFloat(document.getElementById(`perc-${i}`).innerText);
+            let scoreForEachQuestion = percent / 100; 
+            
+            const shortQuestionText = selectedQuiz[i-1].question.split('<br>')[0];
+            payload[`ans${i}`] = `[โจทย์: ${shortQuestionText}] -> คำตอบ: ${document.getElementById(`ans-${i}`).value.trim()}`;
+            payload[`percent${i}`] = percent.toString();
+            payload[`score${i}`] = scoreForEachQuestion.toFixed(2); 
+            finalTotal += scoreForEachQuestion;
+        }
+        payload.totalScore = finalTotal.toFixed(1);
+
+        document.getElementById('totalScore').innerText = payload.totalScore;
+        document.getElementById('result').style.display = "block";
+        document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+
+        // **หมายเหตุ**: อย่าลืมผูก URL Apps Script ของคุณตรงนี้
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyMlrJnMVTerSgFU3xqFjlTik_FGX9-yLcPCy7qsisoqBc9NhQvWI9BKiDjJQREaSei/exec";
+
+        try {
+            await fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors', 
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(payload)
+            });
+            
+            document.getElementById('saveMsg').innerText = "📊 บันทึกคะแนนคำตอบเรียบร้อยแล้ว!";
+            document.getElementById('saveMsg').style.color = "var(--success)";
+            
+            submitBtn.disabled = false;
+            submitBtn.style.background = "var(--warning)"; 
+            submitBtn.innerText = "🔄 แก้ไขคำตอบและส่งใหม่อีกครั้ง";
+        } catch (error) {
+            console.error("Submission Error: ", error);
+            document.getElementById('saveMsg').innerText = "❌ เกิดข้อผิดพลาดทางเทคนิคในการติดต่อฐานข้อมูล โปรดแจ้งครูผู้สอน";
+            document.getElementById('saveMsg').style.color = "var(--danger)";
+            
+            submitBtn.disabled = false;
+            submitBtn.style.background = "var(--primary)";
+            submitBtn.innerText = "ลองส่งข้อมูลอีกครั้ง";
+        }
+    }
+</script>
+
+</body>
+</html>
